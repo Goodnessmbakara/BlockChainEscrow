@@ -1,0 +1,857 @@
+#pragma version 10
+
+smart_contracts.escrow_platform.contract.EscrowPlatform.approval_program:
+    // smart_contracts/escrow_platform/contract.py:188
+    // class EscrowPlatform(ARC4Contract):
+    method "start_transaction(string,uint64)void"
+    method "make_payment(pay,address)uint64"
+    method "claim_refund(string)uint64"
+    method "withdraw_funds_from_escrow(address,string,address,bool)uint64"
+    method "request_invoice_financing(address,string)uint64"
+    txna ApplicationArgs 0
+    match main_start_transaction_route@1 main_make_payment_route@2 main_claim_refund_route@3 main_withdraw_funds_from_escrow_route@4 main_request_invoice_financing_route@5
+    err // reject transaction
+
+main_start_transaction_route@1:
+    // smart_contracts/escrow_platform/contract.py:197
+    // @arc4.abimethod(create="require")
+    txn OnCompletion
+    !
+    assert // OnCompletion is NoOp
+    txn ApplicationID
+    !
+    assert // is creating
+    // smart_contracts/escrow_platform/contract.py:188
+    // class EscrowPlatform(ARC4Contract):
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    btoi
+    // smart_contracts/escrow_platform/contract.py:197
+    // @arc4.abimethod(create="require")
+    callsub start_transaction
+    int 1
+    return
+
+main_make_payment_route@2:
+    // smart_contracts/escrow_platform/contract.py:223
+    // @arc4.abimethod
+    txn OnCompletion
+    !
+    assert // OnCompletion is NoOp
+    txn ApplicationID
+    assert // is not creating
+    // smart_contracts/escrow_platform/contract.py:188
+    // class EscrowPlatform(ARC4Contract):
+    txn GroupIndex
+    int 1
+    -
+    dup
+    gtxns TypeEnum
+    int pay
+    ==
+    assert // transaction type is pay
+    txna ApplicationArgs 1
+    // smart_contracts/escrow_platform/contract.py:223
+    // @arc4.abimethod
+    callsub make_payment
+    itob
+    byte 0x151f7c75
+    swap
+    concat
+    log
+    int 1
+    return
+
+main_claim_refund_route@3:
+    // smart_contracts/escrow_platform/contract.py:260
+    // @arc4.abimethod
+    txn OnCompletion
+    !
+    assert // OnCompletion is NoOp
+    txn ApplicationID
+    assert // is not creating
+    // smart_contracts/escrow_platform/contract.py:188
+    // class EscrowPlatform(ARC4Contract):
+    txna ApplicationArgs 1
+    extract 2 0
+    // smart_contracts/escrow_platform/contract.py:260
+    // @arc4.abimethod
+    callsub claim_refund
+    itob
+    byte 0x151f7c75
+    swap
+    concat
+    log
+    int 1
+    return
+
+main_withdraw_funds_from_escrow_route@4:
+    // smart_contracts/escrow_platform/contract.py:278
+    // @arc4.abimethod
+    txn OnCompletion
+    !
+    assert // OnCompletion is NoOp
+    txn ApplicationID
+    assert // is not creating
+    // smart_contracts/escrow_platform/contract.py:188
+    // class EscrowPlatform(ARC4Contract):
+    txna ApplicationArgs 1
+    txna ApplicationArgs 2
+    extract 2 0
+    txna ApplicationArgs 3
+    txna ApplicationArgs 4
+    int 0
+    getbit
+    // smart_contracts/escrow_platform/contract.py:278
+    // @arc4.abimethod
+    callsub withdraw_funds_from_escrow
+    itob
+    byte 0x151f7c75
+    swap
+    concat
+    log
+    int 1
+    return
+
+main_request_invoice_financing_route@5:
+    // smart_contracts/escrow_platform/contract.py:308
+    // @arc4.abimethod
+    txn OnCompletion
+    !
+    assert // OnCompletion is NoOp
+    txn ApplicationID
+    assert // is not creating
+    // smart_contracts/escrow_platform/contract.py:188
+    // class EscrowPlatform(ARC4Contract):
+    txna ApplicationArgs 1
+    txna ApplicationArgs 2
+    extract 2 0
+    // smart_contracts/escrow_platform/contract.py:308
+    // @arc4.abimethod
+    callsub request_invoice_financing
+    itob
+    byte 0x151f7c75
+    swap
+    concat
+    log
+    int 1
+    return
+
+
+// smart_contracts.escrow_platform.contract.EscrowPlatform.start_transaction(invoice_id: bytes, total_products_amount: uint64) -> void:
+start_transaction:
+    // smart_contracts/escrow_platform/contract.py:197-204
+    // @arc4.abimethod(create="require")
+    // def start_transaction(
+    //     self,
+    //     invoice_id: String,
+    //     total_products_amount: UInt64,
+    // 
+    // 
+    // )->None:
+    proto 2 0
+    // smart_contracts/escrow_platform/contract.py:216
+    // assert total_products_amount >= Global.min_balance
+    frame_dig -1
+    global MinBalance
+    >=
+    assert
+    // smart_contracts/escrow_platform/contract.py:219
+    // self.invoice_id = invoice_id
+    byte "invoice_id"
+    frame_dig -2
+    app_global_put
+    // smart_contracts/escrow_platform/contract.py:220
+    // self.total_products_amount = total_products_amount
+    byte "total_products_amount"
+    frame_dig -1
+    app_global_put
+    retsub
+
+
+// smart_contracts.escrow_platform.contract.EscrowPlatform.make_payment(buyer_payment: uint64, company_address: bytes) -> uint64:
+make_payment:
+    // smart_contracts/escrow_platform/contract.py:223-224
+    // @arc4.abimethod
+    // def make_payment(self, buyer_payment: gtxn.PaymentTransaction, company_address: arc4.Address)->UInt64:
+    proto 2 1
+    // smart_contracts/escrow_platform/contract.py:234
+    // charges_inclusive = self.total_products_amount * UInt64(2 // 100)
+    int 0
+    byte "total_products_amount"
+    app_global_get_ex
+    bury 1
+    assert // check total_products_amount exists
+    // smart_contracts/escrow_platform/contract.py:235
+    // assert buyer_payment.amount > UInt64(0)
+    frame_dig -2
+    gtxns Amount
+    dupn 2
+    assert
+    // smart_contracts/escrow_platform/contract.py:236
+    // assert buyer_payment.receiver == Global.current_application_address, "Payment address must be the application address"
+    frame_dig -2
+    gtxns Receiver
+    global CurrentApplicationAddress
+    ==
+    assert // Payment address must be the application address
+    // smart_contracts/escrow_platform/contract.py:237
+    // assert Txn.sender == buyer_payment.sender, "making suere that the account that made the call is  indeed the buyers account"
+    txn Sender
+    frame_dig -2
+    gtxns Sender
+    dup
+    cover 3
+    dup
+    cover 2
+    ==
+    assert // making suere that the account that made the call is  indeed the buyers account
+    // smart_contracts/escrow_platform/contract.py:238
+    // assert buyer_payment.amount == self.total_products_amount  + charges_inclusive, "payment must include charges"
+    int 0
+    byte "total_products_amount"
+    app_global_get_ex
+    assert // check total_products_amount exists
+    uncover 2
+    ==
+    assert // payment must include charges
+    // smart_contracts/escrow_platform/contract.py:240-241
+    // #find or create escrow
+    // escrow = check_escrow(buyer_payment.sender) or create_escrow(buyer_payment.sender)
+    callsub check_escrow
+    dup
+    global ZeroAddress
+    !=
+    bz make_payment_ternary_false@2
+    frame_dig 2
+    b make_payment_ternary_merge@3
+
+make_payment_ternary_false@2:
+    // smart_contracts/escrow_platform/contract.py:240-241
+    // #find or create escrow
+    // escrow = check_escrow(buyer_payment.sender) or create_escrow(buyer_payment.sender)
+    frame_dig 1
+    callsub create_escrow
+
+make_payment_ternary_merge@3:
+    // smart_contracts/escrow_platform/contract.py:245
+    // payment_into(Global.current_application_address, receiver=escrow, amount=amount_paid_to_escrow)
+    global CurrentApplicationAddress
+    dig 1
+    frame_dig 0
+    callsub payment_into
+    // smart_contracts/escrow_platform/contract.py:247-248
+    // # pay profit into company's  address
+    // company_addr = Account(company_address.bytes)
+    frame_dig -1
+    len
+    int 32
+    ==
+    assert // Address length is 32 bytes
+    // smart_contracts/escrow_platform/contract.py:249-255
+    // itxn.Payment(
+    //     sender=Global.current_application_address,
+    //     receiver=company_addr,
+    //     amount=Global.current_application_address.balance,
+    //     close_remainder_to=company_addr,
+    //     fee=0
+    // ).submit().amount
+    itxn_begin
+    // smart_contracts/escrow_platform/contract.py:250
+    // sender=Global.current_application_address,
+    global CurrentApplicationAddress
+    // smart_contracts/escrow_platform/contract.py:252
+    // amount=Global.current_application_address.balance,
+    dup
+    acct_params_get AcctBalance
+    assert // account funded
+    frame_dig -1
+    itxn_field CloseRemainderTo
+    itxn_field Amount
+    frame_dig -1
+    itxn_field Receiver
+    itxn_field Sender
+    // smart_contracts/escrow_platform/contract.py:249
+    // itxn.Payment(
+    int pay
+    itxn_field TypeEnum
+    // smart_contracts/escrow_platform/contract.py:254
+    // fee=0
+    int 0
+    itxn_field Fee
+    // smart_contracts/escrow_platform/contract.py:249-255
+    // itxn.Payment(
+    //     sender=Global.current_application_address,
+    //     receiver=company_addr,
+    //     amount=Global.current_application_address.balance,
+    //     close_remainder_to=company_addr,
+    //     fee=0
+    // ).submit().amount
+    itxn_submit
+    itxn Amount
+    pop
+    // smart_contracts/escrow_platform/contract.py:256
+    // return escrow.balance
+    acct_params_get AcctBalance
+    assert // account funded
+    frame_bury 0
+    retsub
+
+
+// smart_contracts.escrow_platform.contract.check_escrow(buyer_acount: bytes) -> bytes:
+check_escrow:
+    // smart_contracts/escrow_platform/contract.py:74-75
+    // @subroutine
+    // def check_escrow(buyer_acount: Buyer)->MaybeEscrow:
+    proto 1 1
+    // smart_contracts/escrow_platform/contract.py:85
+    // maybe_escrow, exists = op.Box.get(buyer_acount.bytes)
+    frame_dig -1
+    box_get
+    // smart_contracts/escrow_platform/contract.py:86
+    // if exists:
+    bz check_escrow_else_body@2
+    // smart_contracts/escrow_platform/contract.py:87
+    // return Account(maybe_escrow)
+    frame_dig 0
+    dup
+    len
+    int 32
+    ==
+    assert // Address length is 32 bytes
+    swap
+    retsub
+
+check_escrow_else_body@2:
+    // smart_contracts/escrow_platform/contract.py:89
+    // return Global.zero_address
+    global ZeroAddress
+    swap
+    retsub
+
+
+// smart_contracts.escrow_platform.contract.create_escrow(buyer_acount: bytes) -> bytes:
+create_escrow:
+    // smart_contracts/escrow_platform/contract.py:47-48
+    // @subroutine
+    // def create_escrow(buyer_acount: Buyer) -> Escrow:
+    proto 1 1
+    // smart_contracts/escrow_platform/contract.py:59-66
+    // # invoke the escrow factory contract to create a new vault
+    // address, _txn = arc4.abi_call(
+    //     EscrowFactory.new_escrow,
+    //     approval_program=ESCROW_FACTORY_APPROVAL,
+    //     clear_state_program=ESCROW_FACTORY_CLEAR,
+    //     on_completion=OnCompleteAction.DeleteApplication,
+    //     fee=0
+    // )
+    itxn_begin
+    // smart_contracts/escrow_platform/contract.py:63
+    // clear_state_program=ESCROW_FACTORY_CLEAR,
+    byte 0x0a810143
+    itxn_field ClearStateProgramPages
+    // smart_contracts/escrow_platform/contract.py:62
+    // approval_program=ESCROW_FACTORY_APPROVAL,
+    byte 0x0a2001018004561d2fea361a008e010001003119810512443118144488000b8004151f7c754c50b022438a0001b13100498100b201b220b20722b210b3b40089
+    itxn_field ApprovalProgramPages
+    // smart_contracts/escrow_platform/contract.py:64
+    // on_completion=OnCompleteAction.DeleteApplication,
+    int DeleteApplication
+    itxn_field OnCompletion
+    // smart_contracts/escrow_platform/contract.py:59-66
+    // # invoke the escrow factory contract to create a new vault
+    // address, _txn = arc4.abi_call(
+    //     EscrowFactory.new_escrow,
+    //     approval_program=ESCROW_FACTORY_APPROVAL,
+    //     clear_state_program=ESCROW_FACTORY_CLEAR,
+    //     on_completion=OnCompleteAction.DeleteApplication,
+    //     fee=0
+    // )
+    method "new_escrow()address"
+    itxn_field ApplicationArgs
+    int appl
+    itxn_field TypeEnum
+    // smart_contracts/escrow_platform/contract.py:65
+    // fee=0
+    int 0
+    itxn_field Fee
+    // smart_contracts/escrow_platform/contract.py:59-66
+    // # invoke the escrow factory contract to create a new vault
+    // address, _txn = arc4.abi_call(
+    //     EscrowFactory.new_escrow,
+    //     approval_program=ESCROW_FACTORY_APPROVAL,
+    //     clear_state_program=ESCROW_FACTORY_CLEAR,
+    //     on_completion=OnCompleteAction.DeleteApplication,
+    //     fee=0
+    // )
+    itxn_submit
+    itxn LastLog
+    dup
+    extract 4 0
+    swap
+    extract 0 4
+    byte 0x151f7c75
+    ==
+    assert // ARC4 prefix is valid
+    // smart_contracts/escrow_platform/contract.py:68
+    // escrow = Account(address.bytes)
+    dup
+    len
+    int 32
+    ==
+    assert // Address length is 32 bytes
+    // smart_contracts/escrow_platform/contract.py:70-71
+    // # save (buyer, escrow) pair in box storage
+    // op.Box.put(buyer_acount.bytes, escrow.bytes)
+    frame_dig -1
+    dig 1
+    box_put
+    // smart_contracts/escrow_platform/contract.py:72
+    // return escrow
+    retsub
+
+
+// smart_contracts.escrow_platform.contract.payment_into(sender: bytes, receiver: bytes, amount: uint64) -> void:
+payment_into:
+    // smart_contracts/escrow_platform/contract.py:28-29
+    // @subroutine
+    // def payment_into(sender: Account, /, *, receiver: Account, amount: UInt64)->None:
+    proto 3 0
+    // smart_contracts/escrow_platform/contract.py:38-44
+    // itxn.Payment(
+    //     sender=sender,
+    //     receiver=receiver,
+    //     amount=amount,
+    //     fee=0
+    // 
+    // ).submit()
+    itxn_begin
+    frame_dig -1
+    itxn_field Amount
+    frame_dig -2
+    itxn_field Receiver
+    frame_dig -3
+    itxn_field Sender
+    // smart_contracts/escrow_platform/contract.py:38
+    // itxn.Payment(
+    int pay
+    itxn_field TypeEnum
+    // smart_contracts/escrow_platform/contract.py:42
+    // fee=0
+    int 0
+    itxn_field Fee
+    // smart_contracts/escrow_platform/contract.py:38-44
+    // itxn.Payment(
+    //     sender=sender,
+    //     receiver=receiver,
+    //     amount=amount,
+    //     fee=0
+    // 
+    // ).submit()
+    itxn_submit
+    retsub
+
+
+// smart_contracts.escrow_platform.contract.EscrowPlatform.claim_refund(shipping_status: bytes) -> uint64:
+claim_refund:
+    // smart_contracts/escrow_platform/contract.py:260-261
+    // @arc4.abimethod
+    // def claim_refund(self, shipping_status:String)-> UInt64:
+    proto 1 1
+    // smart_contracts/escrow_platform/contract.py:272
+    // assert shipping_status != "shipped"
+    frame_dig -1
+    byte "shipped"
+    !=
+    assert
+    // smart_contracts/escrow_platform/contract.py:274
+    // escrow = check_escrow(Txn.sender)
+    txn Sender
+    callsub check_escrow
+    // smart_contracts/escrow_platform/contract.py:275
+    // assert escrow
+    dup
+    global ZeroAddress
+    !=
+    assert
+    // smart_contracts/escrow_platform/contract.py:276
+    // return reclaim_then_close_escrow(Txn.sender, escrow, receiver=Txn.sender)
+    txn Sender
+    dup
+    cover 2
+    callsub reclaim_then_close_escrow
+    retsub
+
+
+// smart_contracts.escrow_platform.contract.reclaim_then_close_escrow(buyer_acount: bytes, escrow: bytes, receiver: bytes) -> uint64:
+reclaim_then_close_escrow:
+    // smart_contracts/escrow_platform/contract.py:91-92
+    // @subroutine
+    // def reclaim_then_close_escrow(buyer_acount: Buyer, escrow: Escrow, receiver: Account) -> UInt64:
+    proto 3 1
+    // smart_contracts/escrow_platform/contract.py:104
+    // _deleted = op.Box.delete(buyer_acount.bytes)
+    frame_dig -3
+    box_del
+    pop
+    // smart_contracts/escrow_platform/contract.py:107-113
+    // itxn.Payment(
+    //     sender=escrow,
+    //     receiver=receiver,
+    //     amount=escrow.balance,
+    //     close_remainder_to=receiver,
+    //     fee=0
+    // ).submit().amount
+    itxn_begin
+    // smart_contracts/escrow_platform/contract.py:110
+    // amount=escrow.balance,
+    frame_dig -2
+    acct_params_get AcctBalance
+    assert // account funded
+    frame_dig -1
+    itxn_field CloseRemainderTo
+    itxn_field Amount
+    frame_dig -1
+    itxn_field Receiver
+    frame_dig -2
+    itxn_field Sender
+    // smart_contracts/escrow_platform/contract.py:107
+    // itxn.Payment(
+    int pay
+    itxn_field TypeEnum
+    // smart_contracts/escrow_platform/contract.py:112
+    // fee=0
+    int 0
+    itxn_field Fee
+    // smart_contracts/escrow_platform/contract.py:107-113
+    // itxn.Payment(
+    //     sender=escrow,
+    //     receiver=receiver,
+    //     amount=escrow.balance,
+    //     close_remainder_to=receiver,
+    //     fee=0
+    // ).submit().amount
+    itxn_submit
+    itxn Amount
+    // smart_contracts/escrow_platform/contract.py:106-115
+    // return(
+    //     itxn.Payment(
+    //         sender=escrow,
+    //         receiver=receiver,
+    //         amount=escrow.balance,
+    //         close_remainder_to=receiver,
+    //         fee=0
+    //     ).submit().amount
+    // 
+    // )
+    retsub
+
+
+// smart_contracts.escrow_platform.contract.EscrowPlatform.withdraw_funds_from_escrow(buyer_account: bytes, shipping_status: bytes, company_address: bytes, is_finance: uint64) -> uint64:
+withdraw_funds_from_escrow:
+    // smart_contracts/escrow_platform/contract.py:278-283
+    // @arc4.abimethod
+    // def withdraw_funds_from_escrow(self,
+    //     buyer_account: arc4.Address,
+    //     shipping_status: String,
+    //     company_address: arc4.Address,
+    //     is_finance: bool )->UInt64:
+    proto 4 1
+    // smart_contracts/escrow_platform/contract.py:292
+    // assert shipping_status == "delivered"
+    frame_dig -3
+    byte "delivered"
+    ==
+    assert
+    // smart_contracts/escrow_platform/contract.py:293
+    // assert Txn.sender == Global.creator_address
+    txn Sender
+    global CreatorAddress
+    ==
+    assert
+    // smart_contracts/escrow_platform/contract.py:294
+    // buyer_acc = Account(buyer_account.bytes)
+    frame_dig -4
+    len
+    int 32
+    ==
+    assert // Address length is 32 bytes
+    // smart_contracts/escrow_platform/contract.py:295
+    // company_addr = Account(company_address.bytes)
+    frame_dig -2
+    len
+    int 32
+    ==
+    assert // Address length is 32 bytes
+    // smart_contracts/escrow_platform/contract.py:296
+    // escrow = check_escrow(buyer_acc)
+    frame_dig -4
+    callsub check_escrow
+    // smart_contracts/escrow_platform/contract.py:297
+    // assert escrow
+    dup
+    global ZeroAddress
+    !=
+    assert
+    // smart_contracts/escrow_platform/contract.py:302
+    // receiver=Global.creator_address,
+    global CreatorAddress
+    // smart_contracts/escrow_platform/contract.py:299-304
+    // seller_funds = pay_then_close_escrow(
+    //     buyer_acc,
+    //     escrow,
+    //     receiver=Global.creator_address,
+    //     company_address=company_addr,
+    //     is_finance=is_finance)
+    frame_dig -4
+    cover 2
+    frame_dig -2
+    frame_dig -1
+    callsub pay_then_close_escrow
+    // smart_contracts/escrow_platform/contract.py:305
+    // return seller_funds
+    retsub
+
+
+// smart_contracts.escrow_platform.contract.pay_then_close_escrow(buyer_acount: bytes, escrow: bytes, receiver: bytes, company_address: bytes, is_finance: uint64) -> uint64:
+pay_then_close_escrow:
+    // smart_contracts/escrow_platform/contract.py:117-121
+    // @subroutine
+    // def pay_then_close_escrow(
+    //     buyer_acount: Buyer,
+    //     escrow: Escrow, receiver: Account,
+    //     company_address: Account, is_finance: bool) -> UInt64:
+    proto 5 1
+    // smart_contracts/escrow_platform/contract.py:134
+    // _deleted = op.Box.delete(buyer_acount.bytes)
+    frame_dig -5
+    box_del
+    pop
+    // smart_contracts/escrow_platform/contract.py:136
+    // if is_finance:
+    frame_dig -1
+    bz pay_then_close_escrow_else_body@3
+    // smart_contracts/escrow_platform/contract.py:137
+    // charges = escrow.balance * UInt64(6//100)
+    frame_dig -4
+    acct_params_get AcctBalance
+    bury 1
+    assert // account funded
+    // smart_contracts/escrow_platform/contract.py:138
+    // deduted_charges = escrow.balance - charges
+    frame_dig -4
+    acct_params_get AcctBalance
+    assert // account funded
+    // smart_contracts/escrow_platform/contract.py:140-146
+    // itxn.Payment(
+    //     sender=escrow,
+    //     receiver=receiver,
+    //     amount=deduted_charges,
+    //     close_remainder_to=company_address,
+    //     fee=0
+    // ).submit().amount
+    itxn_begin
+    frame_dig -2
+    itxn_field CloseRemainderTo
+    itxn_field Amount
+    frame_dig -3
+    itxn_field Receiver
+    frame_dig -4
+    itxn_field Sender
+    // smart_contracts/escrow_platform/contract.py:140
+    // itxn.Payment(
+    int pay
+    itxn_field TypeEnum
+    // smart_contracts/escrow_platform/contract.py:145
+    // fee=0
+    int 0
+    itxn_field Fee
+    // smart_contracts/escrow_platform/contract.py:140-146
+    // itxn.Payment(
+    //     sender=escrow,
+    //     receiver=receiver,
+    //     amount=deduted_charges,
+    //     close_remainder_to=company_address,
+    //     fee=0
+    // ).submit().amount
+    itxn_submit
+    itxn Amount
+    // smart_contracts/escrow_platform/contract.py:139-148
+    // return(
+    // itxn.Payment(
+    //     sender=escrow,
+    //     receiver=receiver,
+    //     amount=deduted_charges,
+    //     close_remainder_to=company_address,
+    //     fee=0
+    // ).submit().amount
+    // 
+    // )
+    retsub
+
+pay_then_close_escrow_else_body@3:
+    // smart_contracts/escrow_platform/contract.py:150
+    // charges = escrow.balance * UInt64(2//100)
+    frame_dig -4
+    acct_params_get AcctBalance
+    bury 1
+    assert // account funded
+    // smart_contracts/escrow_platform/contract.py:151
+    // deduted_charges = escrow.balance - charges
+    frame_dig -4
+    acct_params_get AcctBalance
+    assert // account funded
+    // smart_contracts/escrow_platform/contract.py:153-159
+    // itxn.Payment(
+    //     sender=escrow,
+    //     receiver=receiver,
+    //     amount=deduted_charges,
+    //     close_remainder_to=company_address,
+    //     fee=0
+    // ).submit().amount
+    itxn_begin
+    frame_dig -2
+    itxn_field CloseRemainderTo
+    itxn_field Amount
+    frame_dig -3
+    itxn_field Receiver
+    frame_dig -4
+    itxn_field Sender
+    // smart_contracts/escrow_platform/contract.py:153
+    // itxn.Payment(
+    int pay
+    itxn_field TypeEnum
+    // smart_contracts/escrow_platform/contract.py:158
+    // fee=0
+    int 0
+    itxn_field Fee
+    // smart_contracts/escrow_platform/contract.py:153-159
+    // itxn.Payment(
+    //     sender=escrow,
+    //     receiver=receiver,
+    //     amount=deduted_charges,
+    //     close_remainder_to=company_address,
+    //     fee=0
+    // ).submit().amount
+    itxn_submit
+    itxn Amount
+    // smart_contracts/escrow_platform/contract.py:152-161
+    // return(
+    // itxn.Payment(
+    //     sender=escrow,
+    //     receiver=receiver,
+    //     amount=deduted_charges,
+    //     close_remainder_to=company_address,
+    //     fee=0
+    // ).submit().amount
+    // 
+    // )
+    retsub
+
+
+// smart_contracts.escrow_platform.contract.EscrowPlatform.request_invoice_financing(buyer_account: bytes, shipping_status: bytes) -> uint64:
+request_invoice_financing:
+    // smart_contracts/escrow_platform/contract.py:308-309
+    // @arc4.abimethod
+    // def request_invoice_financing(self, buyer_account: arc4.Address, shipping_status: String)->UInt64:
+    proto 2 1
+    // smart_contracts/escrow_platform/contract.py:316
+    // assert shipping_status == "shipped"
+    frame_dig -1
+    byte "shipped"
+    ==
+    assert
+    // smart_contracts/escrow_platform/contract.py:317
+    // assert Txn.sender == Global.creator_address
+    txn Sender
+    global CreatorAddress
+    ==
+    assert
+    // smart_contracts/escrow_platform/contract.py:319
+    // buyer_acc = Account(buyer_account.bytes)
+    frame_dig -2
+    len
+    int 32
+    ==
+    assert // Address length is 32 bytes
+    // smart_contracts/escrow_platform/contract.py:320
+    // escrow = check_escrow(buyer_acc)
+    frame_dig -2
+    callsub check_escrow
+    // smart_contracts/escrow_platform/contract.py:321
+    // assert escrow
+    dup
+    global ZeroAddress
+    !=
+    assert
+    // smart_contracts/escrow_platform/contract.py:322
+    // requested_funds = pay_x_percentage(escrow, receiver=Global.creator_address)
+    global CreatorAddress
+    callsub pay_x_percentage
+    // smart_contracts/escrow_platform/contract.py:323
+    // return requested_funds
+    retsub
+
+
+// smart_contracts.escrow_platform.contract.pay_x_percentage(escrow: bytes, receiver: bytes) -> uint64:
+pay_x_percentage:
+    // smart_contracts/escrow_platform/contract.py:166-167
+    // @subroutine
+    // def pay_x_percentage(escrow: Escrow, receiver: Account)-> UInt64:
+    proto 2 1
+    // smart_contracts/escrow_platform/contract.py:175
+    // payable_percentage = escrow.balance * UInt64(30//100)
+    frame_dig -2
+    acct_params_get AcctBalance
+    bury 1
+    assert // account funded
+    // smart_contracts/escrow_platform/contract.py:177-183
+    //  itxn.Payment(
+    //     sender=escrow,
+    //     receiver=receiver,
+    //     amount=payable_percentage,
+    //     close_remainder_to=receiver,
+    //     fee=0
+    // ).submit().amount
+    itxn_begin
+    frame_dig -1
+    itxn_field CloseRemainderTo
+    // smart_contracts/escrow_platform/contract.py:175
+    // payable_percentage = escrow.balance * UInt64(30//100)
+    int 0
+    itxn_field Amount
+    frame_dig -1
+    itxn_field Receiver
+    frame_dig -2
+    itxn_field Sender
+    // smart_contracts/escrow_platform/contract.py:177
+    // itxn.Payment(
+    int pay
+    itxn_field TypeEnum
+    // smart_contracts/escrow_platform/contract.py:182
+    // fee=0
+    int 0
+    itxn_field Fee
+    // smart_contracts/escrow_platform/contract.py:177-183
+    //  itxn.Payment(
+    //     sender=escrow,
+    //     receiver=receiver,
+    //     amount=payable_percentage,
+    //     close_remainder_to=receiver,
+    //     fee=0
+    // ).submit().amount
+    itxn_submit
+    itxn Amount
+    // smart_contracts/escrow_platform/contract.py:176-185
+    // return(
+    //      itxn.Payment(
+    //         sender=escrow,
+    //         receiver=receiver,
+    //         amount=payable_percentage,
+    //         close_remainder_to=receiver,
+    //         fee=0
+    //     ).submit().amount
+    // 
+    // )
+    retsub

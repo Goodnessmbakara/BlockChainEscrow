@@ -1,0 +1,49 @@
+#pragma version 10
+
+smart_contracts.escrow_platform.contract.EscrowFactory.approval_program:
+    // smart_contracts/escrow_platform/contract.py:10
+    // class EscrowFactory(ARC4Contract):
+    method "new_escrow()address"
+    txna ApplicationArgs 0
+    match main_new_escrow_route@1
+    err // reject transaction
+
+main_new_escrow_route@1:
+    // smart_contracts/escrow_platform/contract.py:15
+    // @arc4.abimethod(create="require", allow_actions=[OnCompleteAction.DeleteApplication])
+    txn OnCompletion
+    int DeleteApplication
+    ==
+    assert // OnCompletion is DeleteApplication
+    txn ApplicationID
+    !
+    assert // is creating
+    callsub new_escrow
+    byte 0x151f7c75
+    swap
+    concat
+    log
+    int 1
+    return
+
+
+// smart_contracts.escrow_platform.contract.EscrowFactory.new_escrow() -> bytes:
+new_escrow:
+    // smart_contracts/escrow_platform/contract.py:15-16
+    // @arc4.abimethod(create="require", allow_actions=[OnCompleteAction.DeleteApplication])
+    // def new_escrow(self)->arc4.Address:
+    proto 0 1
+    // smart_contracts/escrow_platform/contract.py:23
+    // return arc4.Address(itxn.Payment(receiver=Txn.sender, rekey_to=Txn.sender, fee=0).submit().sender)
+    itxn_begin
+    txn Sender
+    dup
+    itxn_field RekeyTo
+    itxn_field Receiver
+    int pay
+    itxn_field TypeEnum
+    int 0
+    itxn_field Fee
+    itxn_submit
+    itxn Sender
+    retsub

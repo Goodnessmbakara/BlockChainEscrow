@@ -1,0 +1,50 @@
+{
+    "hints": {
+        "new_escrow()address": {
+            "call_config": {
+                "delete_application": "CREATE"
+            }
+        }
+    },
+    "source": {
+        "approval": "I3ByYWdtYSB2ZXJzaW9uIDEwCgpzbWFydF9jb250cmFjdHMuZXNjcm93X3BsYXRmb3JtLmNvbnRyYWN0LkVzY3Jvd0ZhY3RvcnkuYXBwcm92YWxfcHJvZ3JhbToKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9lc2Nyb3dfcGxhdGZvcm0vY29udHJhY3QucHk6MTAKICAgIC8vIGNsYXNzIEVzY3Jvd0ZhY3RvcnkoQVJDNENvbnRyYWN0KToKICAgIG1ldGhvZCAibmV3X2VzY3JvdygpYWRkcmVzcyIKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDAKICAgIG1hdGNoIG1haW5fbmV3X2VzY3Jvd19yb3V0ZUAxCiAgICBlcnIgLy8gcmVqZWN0IHRyYW5zYWN0aW9uCgptYWluX25ld19lc2Nyb3dfcm91dGVAMToKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9lc2Nyb3dfcGxhdGZvcm0vY29udHJhY3QucHk6MTUKICAgIC8vIEBhcmM0LmFiaW1ldGhvZChjcmVhdGU9InJlcXVpcmUiLCBhbGxvd19hY3Rpb25zPVtPbkNvbXBsZXRlQWN0aW9uLkRlbGV0ZUFwcGxpY2F0aW9uXSkKICAgIHR4biBPbkNvbXBsZXRpb24KICAgIGludCBEZWxldGVBcHBsaWNhdGlvbgogICAgPT0KICAgIGFzc2VydCAvLyBPbkNvbXBsZXRpb24gaXMgRGVsZXRlQXBwbGljYXRpb24KICAgIHR4biBBcHBsaWNhdGlvbklECiAgICAhCiAgICBhc3NlcnQgLy8gaXMgY3JlYXRpbmcKICAgIGNhbGxzdWIgbmV3X2VzY3JvdwogICAgYnl0ZSAweDE1MWY3Yzc1CiAgICBzd2FwCiAgICBjb25jYXQKICAgIGxvZwogICAgaW50IDEKICAgIHJldHVybgoKCi8vIHNtYXJ0X2NvbnRyYWN0cy5lc2Nyb3dfcGxhdGZvcm0uY29udHJhY3QuRXNjcm93RmFjdG9yeS5uZXdfZXNjcm93KCkgLT4gYnl0ZXM6Cm5ld19lc2Nyb3c6CiAgICAvLyBzbWFydF9jb250cmFjdHMvZXNjcm93X3BsYXRmb3JtL2NvbnRyYWN0LnB5OjE1LTE2CiAgICAvLyBAYXJjNC5hYmltZXRob2QoY3JlYXRlPSJyZXF1aXJlIiwgYWxsb3dfYWN0aW9ucz1bT25Db21wbGV0ZUFjdGlvbi5EZWxldGVBcHBsaWNhdGlvbl0pCiAgICAvLyBkZWYgbmV3X2VzY3JvdyhzZWxmKS0+YXJjNC5BZGRyZXNzOgogICAgcHJvdG8gMCAxCiAgICAvLyBzbWFydF9jb250cmFjdHMvZXNjcm93X3BsYXRmb3JtL2NvbnRyYWN0LnB5OjIzCiAgICAvLyByZXR1cm4gYXJjNC5BZGRyZXNzKGl0eG4uUGF5bWVudChyZWNlaXZlcj1UeG4uc2VuZGVyLCByZWtleV90bz1UeG4uc2VuZGVyLCBmZWU9MCkuc3VibWl0KCkuc2VuZGVyKQogICAgaXR4bl9iZWdpbgogICAgdHhuIFNlbmRlcgogICAgZHVwCiAgICBpdHhuX2ZpZWxkIFJla2V5VG8KICAgIGl0eG5fZmllbGQgUmVjZWl2ZXIKICAgIGludCBwYXkKICAgIGl0eG5fZmllbGQgVHlwZUVudW0KICAgIGludCAwCiAgICBpdHhuX2ZpZWxkIEZlZQogICAgaXR4bl9zdWJtaXQKICAgIGl0eG4gU2VuZGVyCiAgICByZXRzdWIK",
+        "clear": "I3ByYWdtYSB2ZXJzaW9uIDEwCgpzbWFydF9jb250cmFjdHMuZXNjcm93X3BsYXRmb3JtLmNvbnRyYWN0LkVzY3Jvd0ZhY3RvcnkuY2xlYXJfc3RhdGVfcHJvZ3JhbToKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9lc2Nyb3dfcGxhdGZvcm0vY29udHJhY3QucHk6MTAKICAgIC8vIGNsYXNzIEVzY3Jvd0ZhY3RvcnkoQVJDNENvbnRyYWN0KToKICAgIGludCAxCiAgICByZXR1cm4K"
+    },
+    "state": {
+        "global": {
+            "num_byte_slices": 0,
+            "num_uints": 0
+        },
+        "local": {
+            "num_byte_slices": 0,
+            "num_uints": 0
+        }
+    },
+    "schema": {
+        "global": {
+            "declared": {},
+            "reserved": {}
+        },
+        "local": {
+            "declared": {},
+            "reserved": {}
+        }
+    },
+    "contract": {
+        "name": "EscrowFactory",
+        "desc": "\n    A smart contracts that creates an account and rekeys it to the sender.\n    ",
+        "methods": [
+            {
+                "name": "new_escrow",
+                "args": [],
+                "returns": {
+                    "type": "address",
+                    "desc": "The escrow address."
+                },
+                "desc": "creates an instance of a new account and rekeys it to the sender."
+            }
+        ],
+        "networks": {}
+    },
+    "bare_call_config": {}
+}

@@ -1,0 +1,7 @@
+#pragma version 10
+
+smart_contracts.escrow_platform.contract.EscrowFactory.clear_state_program:
+    // smart_contracts/escrow_platform/contract.py:10
+    // class EscrowFactory(ARC4Contract):
+    int 1
+    return
