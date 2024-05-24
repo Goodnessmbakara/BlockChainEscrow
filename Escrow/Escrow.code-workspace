@@ -6,6 +6,9 @@
     },
     {
       "path": "projects/Escrow"
+    },
+    {
+      "path": "projects/Frontend"
     }
   ],
   "settings": {

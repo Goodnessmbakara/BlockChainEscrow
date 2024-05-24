@@ -91,7 +91,7 @@ def check_escrow(buyer_acount: Buyer)->MaybeEscrow:
 @subroutine
 def reclaim_then_close_escrow(buyer_acount: Buyer, escrow: Escrow, receiver: Account) -> UInt64:
     """
-    Closes the escrow and transfers it balances to the receiver
+    reclaiming funds and close escrow once shipping failed
 
     Args:
         buyer_acount(Buyer): The buyer to close the escrow
@@ -121,7 +121,7 @@ def pay_then_close_escrow(
     company_address: Account, is_finance: bool) -> UInt64:
 
     """
-    Closes the escrow and transfers it balances to the receiver
+    pays the seller some percentage and close escrow
 
     Args:
         buyer_acount(Buyer): The buyer to close the escrow
