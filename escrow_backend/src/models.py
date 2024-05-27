@@ -11,6 +11,7 @@ class Business(models.Model):
     official_number = models.CharField(max_length=255, blank=True, null=True)
     helpdesk_email = models.EmailField(blank=True, null=True)
     helpdesk_number = models.CharField(max_length=255, blank=True, null=True)
+    staff_size = models.IntegerField()
 
 class User(models.Model):
     USER_TYPE_CHOICES = [
@@ -18,15 +19,14 @@ class User(models.Model):
         ('importer', 'Importer'),
     ]
     email = models.EmailField(unique=True)
-    password = models.CharField(max_length=255)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     business = models.ForeignKey(Business, on_delete=models.CASCADE)
     user_type = models.CharField(max_length=255, choices=USER_TYPE_CHOICES)
-    staff_size = models.IntegerField()
+    
 
 class KYC(models.Model):
-    outsourced = models.BooleanField()
+    is_successful = models.BooleanField(default=False)
     business = models.OneToOneField(Business, on_delete=models.CASCADE)
 
 class Order(models.Model):
@@ -71,4 +71,6 @@ class Wallet(models.Model):
     business = models.ForeignKey(Business, on_delete=models.CASCADE)
 
 class Dispute(models.Model):
-    pass
+    description = models.TextField()
+    files = models.FileField(upload_to='dispute_files/')
+    
