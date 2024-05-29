@@ -5,9 +5,9 @@ name = "pypi"
 
 [packages]
 asgiref = "==3.8.1"
-django = "==5.0.6"
 djangorestframework = "==3.15.1"
 sqlparse = "==0.5.0"
+django = "*"
 
 [dev-packages]
 

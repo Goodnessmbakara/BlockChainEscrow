@@ -1,6 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
-from .managers  
+
 class Business(models.Model):
     business_name = models.CharField(max_length=255)
     street_address = models.CharField(max_length=255)
