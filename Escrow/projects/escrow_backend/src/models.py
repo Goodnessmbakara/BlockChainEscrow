@@ -13,17 +13,6 @@ class Business(models.Model):
     helpdesk_number = models.CharField(max_length=255, blank=True, null=True)
     staff_size = models.IntegerField()
 
-class User(models.Model):
-    USER_TYPE_CHOICES = [
-        ('experter', 'Experter'),
-        ('importer', 'Importer'),
-    ]
-    email = models.EmailField(unique=True)
-    first_name = models.CharField(max_length=255)
-    last_name = models.CharField(max_length=255)
-    business = models.ForeignKey(Business, on_delete=models.CASCADE)
-    user_type = models.CharField(max_length=255, choices=USER_TYPE_CHOICES)
-    
 
 class KYC(models.Model):
     is_successful = models.BooleanField(default=False)
