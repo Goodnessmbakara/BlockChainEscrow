@@ -6,7 +6,7 @@
     <script src="https://apis.google.com/js/platform.js" async defer></script>
 </head>
 <body>
-    <div class="g-signin2" data-onsuccess="onSignIn"></div>
+    <div class="g-signin2" data-onsuccess="onSignIn" ></div>
     <script>
         function onSignIn(googleUser) {
             var userId = "123"
@@ -22,8 +22,8 @@
                 },
                 body: JSON.stringify({ token: id_token }),
             })
-            .then(response => {response.json();
-            console.log(response)}
+            .then(response =>response.json()
+           // console.log(response)}
             )
             .then(data => {
                 console.log('Success:', data);

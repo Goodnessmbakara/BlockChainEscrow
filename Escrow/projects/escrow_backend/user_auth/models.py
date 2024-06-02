@@ -10,6 +10,15 @@ AUTH_PROVIDERS = {'facebook':'facebook', 'google':'google',
                   'twitter':'twitter', 'email':'email'
                   }
 
+"""passport
+driving_licence
+national_identity_card
+residence_permit
+visa
+work_permit
+generic (for documents that don't fit into the other categories)
+proof_of_address"""
+
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     USER_TYPE_CHOICES = [
         ('exporter', 'Exporter'),
@@ -27,7 +36,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     auth_provider = models.CharField(max_length=255, blank=True,null = False, default=AUTH_PROVIDERS.get('email'))
-    business = models.ForeignKey(Business, on_delete=models.CASCADE, null =True)
+    kyc_verified = models.BooleanField(default=False)
+
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
