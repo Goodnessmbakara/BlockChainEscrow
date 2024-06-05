@@ -16,10 +16,19 @@ class BusinessView(generics.ListCreateAPIView):
     serializer_class = BusinessSerializer
     queryset = Business.objects.all()
     
-class BusinessDetailView(generics.RetrieveUpdateDestroyAPIView):
+class BusinessDetailView(generics.RetrieveDestroyAPIView):
     serializer_class = BusinessSerializer
     queryset = Business.objects.all()
 
+class BusinessUpdateView(generics.UpdateAPIView):
+    queryset = Business.objects.all()
+    serializer_class = BusinessUpdateSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return Business.objects.filter(owner=user)
+    
 class VerifyBusinessOTPView(APIView):
     def post(self, request):
         business_id = request.data.get('business_id')

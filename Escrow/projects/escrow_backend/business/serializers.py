@@ -35,6 +35,17 @@ class BusinessSerializer(serializers.ModelSerializer):
         business.save()
 
         return business
+
+class BusinessUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Business
+        fields = [
+            'business_logo',
+            'helpdesk_email',
+            'helpdesk_number',
+            'staff_size_range'
+        ]
+        
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
