@@ -2,7 +2,7 @@ import random
 from django.core.mail import send_mail
 from django.conf import settings
 from rest_framework import serializers
-from .models import Invoice, InvoiceItem
+from .models import Invoice, InvoiceItem, Order
 from user_auth.models import CustomUser
 
 class BusinessSerializer(serializers.ModelSerializer):
@@ -35,6 +35,10 @@ class BusinessSerializer(serializers.ModelSerializer):
         business.save()
 
         return business
+class OrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = ('id', 'invoice', 'importer', 'exporter', 'order_status', 'created_at', 'delivery_date', 'total')
 
 class InvoiceItemSerializer(serializers.ModelSerializer):
     class Meta:

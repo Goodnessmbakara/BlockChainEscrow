@@ -5,11 +5,11 @@ from rest_framework.response import Response
 from rest_framework.permissions import isAuthenticated
 from rest_framework import status
 
-
-from . models import Business, Invoice
+from .filters import OrderFilter
+from . models import Business, Invoice, Order
 from user_auth.models import CustomUser
 
-from .serializers import InvoiceSerializer, BusinessSerializer
+from .serializers import InvoiceSerializer, BusinessSerializer, OrderSerializer
 
 
 class BusinessView(generics.ListCreateAPIView):
@@ -40,6 +40,25 @@ class VerifyBusinessOTPView(APIView):
         elif business.phone_otp != phone_otp:
             return Response({'error': 'Invalid phone OTP'}, status=status.HTTP_400_BAD_REQUEST)
 
+class OrderListCreateView(generics.ListCreateAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = OrderFilter
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_authenticated:
+            if user.user_type == "importer":
+                return Order.objects.filter(importer=user)
+            return Order.objects.filter(exporter__owner=user)
+        return Order.objects.none()
+
+class OrderRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    permission_classes = [IsAuthenticated]
 
 class InvoiceListCreateView(generics.ListCreateAPIView):
     queryset = Invoice.objects.all()
