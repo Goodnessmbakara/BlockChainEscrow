@@ -44,7 +44,7 @@ class Invoice(models.Model):
     sent_to = models.ForeignKey('user_auth.CustomUser', on_delete=models.SET_NULL, null=True)
     total = models.DecimalField(max_digits=10, decimal_places=2)
     issued_at = models.DateTimeField()
-    current_status = models.CharField(max_length=255, choices=STATUS_CHOICES, default = 'awaiting_approval')
+    current_status = models.CharField(max_length=255, choices=INVOICE_STATUS_CHOICES, default = 'awaiting_approval')
 
 class InvoiceItem(models.Model):
     invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE, related_name='items')
@@ -73,7 +73,7 @@ class Order(models.Model):
     order_status = models.CharField(max_length = 50, choices=ORDER_STATUS_CHOICES)
     created_at = models.DateTimeField(auto_now_add = True)
     delivery_date = models.DateTimeField(null = True, blank = True)
-    total = models.DecimalField(decimal_places=10)
+    total = models.DecimalField(max_digits=10, decimal_places =5)
 
 @receiver(post_save, sender=Invoice)
 def create_order_on_invoice_approval(sender, instance, **kwargs):

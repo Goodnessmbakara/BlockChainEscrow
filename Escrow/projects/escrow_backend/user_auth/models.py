@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from src.models import Business
+from business.models import Business
 from .managers import CustomUserManager
 
 AUTH_PROVIDERS = {'facebook':'facebook', 'google':'google',

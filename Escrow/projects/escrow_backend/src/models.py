@@ -15,7 +15,7 @@ class Notification(models.Model):
 class Wallet(models.Model):
     wallet_balance = models.DecimalField(max_digits=10, decimal_places=2)
     escrow = models.DecimalField(max_digits=10, decimal_places=2)
-    business = models.ForeignKey(Business, on_delete=models.CASCADE)
+    business = models.ForeignKey('business.Business', on_delete=models.CASCADE)
 
 class Dispute(models.Model):
     description = models.TextField()

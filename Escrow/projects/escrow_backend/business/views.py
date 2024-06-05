@@ -1,15 +1,16 @@
 
 from rest_framework import generics
 from rest_framework.views import APIView
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
-from rest_framework.permissions import isAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 
 from .filters import OrderFilter
 from . models import Business, Invoice, Order
 from user_auth.models import CustomUser
 
-from .serializers import InvoiceSerializer, BusinessSerializer, OrderSerializer
+from .serializers import InvoiceSerializer, BusinessSerializer, OrderSerializer, BusinessUpdateSerializer
 
 
 class BusinessView(generics.ListCreateAPIView):
@@ -72,7 +73,7 @@ class OrderRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 class InvoiceListCreateView(generics.ListCreateAPIView):
     queryset = Invoice.objects.all()
     serializer_class = InvoiceSerializer
-    permission_class = [isAuthenticated]
+    permission_class = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
@@ -84,4 +85,4 @@ class InvoiceListCreateView(generics.ListCreateAPIView):
 class InvoiceRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Invoice.objects.all()
     serializer_class = InvoiceSerializer
-    permission_class = [isAuthenticated]
+    permission_class = [IsAuthenticated]
