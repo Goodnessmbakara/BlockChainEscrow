@@ -40,7 +40,7 @@ class VerifyBusinessOTPView(APIView):
         elif business.phone_otp != phone_otp:
             return Response({'error': 'Invalid phone OTP'}, status=status.HTTP_400_BAD_REQUEST)
 
-class OrderListCreateView(generics.ListCreateAPIView):
+class OrderListView(generics.ListAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
     permission_classes = [IsAuthenticated]

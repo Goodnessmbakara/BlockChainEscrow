@@ -1,5 +1,6 @@
 from django.db import models
-
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 """
 company_registration_document
@@ -73,4 +74,14 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add = True)
     delivery_date = models.DateTimeField(null = True, blank = True)
     total = models.DecimalField(decimal_places=10)
-    
+
+@receiver(post_save, sender=Invoice)
+def create_order_on_invoice_approval(sender, instance, **kwargs):
+    if instance.current_status == 'is_approved':
+        Order.objects.create(
+            invoice=instance,
+            importer=instance.sent_to,
+            exporter=instance.creator,
+            order_status='payment_success',
+            total=instance.total
+        )

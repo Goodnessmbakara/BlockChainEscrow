@@ -4,7 +4,7 @@ from .views import (
     BusinessRetrieveUpdateDestroyView,
     InvoiceListCreateView,
     InvoiceRetrieveUpdateDestroyView,
-    VerifyBusinessOTPView,
+    VerifyBusinessOTPView,OrderListView
 )
 
 urlpatterns = [
@@ -16,4 +16,6 @@ urlpatterns = [
     # Invoice URLs
     path('invoices/', InvoiceListCreateView.as_view(), name='invoice-list-create'),
     path('invoices/<int:pk>/', InvoiceRetrieveUpdateDestroyView.as_view(), name='invoice-retrieve-update-destroy'),
+    path('orders/', OrderListView.as_view(), name='order-list-create'),
+    path('orders/<int:pk>/', OrderRetrieveUpdateDestroyView.as_view(), name='order-detail'),
 ]
