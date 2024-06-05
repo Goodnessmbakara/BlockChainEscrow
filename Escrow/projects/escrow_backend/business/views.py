@@ -23,15 +23,15 @@ class BusinessDetailView(generics.RetrieveUpdateDestroyAPIView):
 class VerifyBusinessOTPView(APIView):
     def post(self, request):
         business_id = request.data.get('business_id')
-        email_otp = request.data.get('email_otp')
-        phone_otp = request.data.get('phone_otp')
+        email_otp = request.data.get('email_otp', '')
+        phone_otp = request.data.get('phone_otp', '')
 
         try:
             business = Business.objects.get(id=business_id)
         except Business.DoesNotExist:
             return Response({'error': 'Business not found'}, status=status.HTTP_404_NOT_FOUND)
 
-        if business.email_otp == email_otp and business.phone_otp == phone_otp:
+        if business.email_otp == email_otp and business.email_otp == phone_otp:
             business.contact_verified = True
             business.save()
             return Response({'message': 'Business verified successfully'}, status=status.HTTP_200_OK)
