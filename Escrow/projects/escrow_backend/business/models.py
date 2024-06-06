@@ -37,7 +37,7 @@ class Invoice(models.Model):
         ('awaiting_approval', 'Awaiting Approval'),
         ('is_approved', 'Is Approved'),
     ]
-    
+    invoice_title = models.CharField(max_length=100)
     invoiceID = models.AutoField(primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)
     creator = models.ForeignKey('Business', on_delete=models.CASCADE)
@@ -80,6 +80,7 @@ def create_order_on_invoice_approval(sender, instance, **kwargs):
     if instance.current_status == 'is_approved':
         Order.objects.create(
             invoice=instance,
+            title=instance.invoice_title,
             importer=instance.sent_to,
             exporter=instance.creator,
             order_status='payment_success',
