@@ -54,7 +54,8 @@ EXTERNAL_APPS = [
 USER_DEFINED_APPS = [
     'src.apps.SrcConfig',
     'user_auth.apps.UserAuthConfig',
-    'business.apps.BusinessConfig'
+    'business.apps.BusinessConfig',
+    'invoice.apps.InvoiceConfig'
 ]
 
 INSTALLED_APPS = INTERNAL_APPS +EXTERNAL_APPS +USER_DEFINED_APPS

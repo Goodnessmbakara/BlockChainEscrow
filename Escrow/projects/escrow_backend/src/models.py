@@ -8,7 +8,8 @@ class Order(models.Model):
     status = models.CharField(max_length=255)
 
 class Notification(models.Model):
-    message_body = models.TextField()
+    title = models.CharField(max_length=250, null=True, blank=True)
+    description = models.TextField()
     is_read = models.BooleanField(default=False)
 
 
