@@ -46,3 +46,31 @@ class InvoiceRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Invoice.objects.all()
     serializer_class = InvoiceSerializer
     permission_class = [IsAuthenticated]
+
+class AcceptInvoiceView(generics.UpdateAPIView):
+    queryset = Invoice.objects.all()
+    serializer_class = InvoiceSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def update(self, request, *args, **kwargs):
+        invoice = self.get_object()
+        if request.user != invoice.sent_to:
+            return Response({"detail": "You do not have permission to perform this action."}, status=status.HTTP_403_FORBIDDEN)
+        
+        invoice.current_status = 'is_approved'
+        invoice.save()
+        return Response({"detail": "Invoice has been accepted."}, status=status.HTTP_200_OK)
+
+class DeclineInvoiceView(generics.UpdateAPIView):
+    queryset = Invoice.objects.all()
+    serializer_class = InvoiceSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def update(self, request, *args, **kwargs):
+        invoice = self.get_object()
+        if request.user != invoice.sent_to:
+            return Response({"detail": "You do not have permission to perform this action."}, status=status.HTTP_403_FORBIDDEN)
+        
+        invoice.current_status = 'is_declined'
+        invoice.save()
+        return Response({"detail": "Invoice has been declined."}, status=status.HTTP_200_OK)

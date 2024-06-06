@@ -6,6 +6,7 @@ class Invoice(models.Model):
     INVOICE_STATUS_CHOICES = [
         ('awaiting_approval', 'Awaiting Approval'),
         ('is_approved', 'Is Approved'),
+        ('is_declined', 'Is Declined'),
     ]
     invoice_title = models.CharField(max_length=100)
     invoiceID = models.AutoField(primary_key=True)
